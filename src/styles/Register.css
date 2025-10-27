@@ -1,0 +1,107 @@
+:root{
+  --bg-card:#0f172a;
+  --bg-card-2:#111827;
+  --border:#1e293b;
+  --text:#f8fafc;
+  --muted:#cbd5e1;
+  --accent:#10b981;
+  --accent-ink:#062a23;
+  --danger:#ef4444;
+}
+
+.auth-container{
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:1.5rem;
+  background:radial-gradient(1200px 600px at 50% -10%, #0f172a 0%, #0b1220 60%, #0b1220 100%);
+}
+
+.auth-card{
+  width:100%;
+  max-width:420px;
+  background:var(--bg-card);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:1.25rem 1.5rem 1.4rem;
+  box-shadow:0 14px 30px rgba(0,0,0,.35);
+}
+
+.auth-title{
+  margin:0 0 .75rem 0;
+  font-size:1.7rem;
+  text-align:center;
+}
+
+.auth-form{
+  display:grid;
+  gap:.75rem;
+  margin-top:.25rem;
+}
+
+.auth-input{
+  background:var(--bg-card-2);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:.65rem .8rem;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.auth-input::placeholder{ color:#94a3b8; }
+.auth-input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.auth-submit{
+  margin-top:.25rem;
+  background:var(--accent);
+  color:var(--accent-ink);
+  border:none;
+  border-radius:10px;
+  padding:.7rem 1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:filter .15s ease, transform .05s ease;
+}
+.auth-submit:hover{ filter:brightness(.98); }
+.auth-submit:active{ transform:translateY(1px); }
+
+.error-message{
+  margin:.35rem 0 0;
+  color:var(--danger);
+  background:#7f1d1d22;
+  border:1px solid #b91c1c55;
+  padding:.5rem .6rem;
+  border-radius:8px;
+  font-size:.95rem;
+}
+
+.auth-helper{
+  margin:.9rem 0 0;
+  color:var(--muted);
+  text-align:center;
+}
+.auth-link{
+  background:transparent;
+  border:none;
+  color:var(--accent);
+  font-weight:700;
+  cursor:pointer;
+  padding:0 .1rem;
+}
+.auth-link:hover{ text-decoration:underline; }
+
+.auth-success{
+  margin:.35rem 0 0;
+  color:var(--accent);
+  background:#065f4622;
+  border:1px solid #10b98155;
+  padding:.5rem .6rem;
+  border-radius:8px;
+  font-size:.95rem;
+  font-weight:600;
+}
+

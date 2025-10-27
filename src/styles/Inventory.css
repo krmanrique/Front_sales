@@ -1,0 +1,98 @@
+:root{
+  --bg-card:#0f172a;      /* azul muy oscuro */
+  --bg-card-2:#111827;    /* gris azulado oscuro */
+  --border:#1e293b;
+  --text:#f8fafc;
+  --muted:#cbd5e1;
+  --accent:#10b981;       /* verde */
+  --accent-ink:#062a23;
+  --danger:#ef4444;
+}
+
+.inv-container{
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:1.5rem;
+  background:linear-gradient(180deg,#0b1220 0%, #0b1220 40%, #0b1220 100%);
+}
+
+.inv-card{
+  width:100%;
+  max-width:760px;
+  background:var(--bg-card);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:1.25rem 1.5rem;
+  box-shadow:0 14px 30px rgba(0,0,0,.35);
+}
+
+.inv-title{
+  margin:0 0 1rem 0;
+  font-size:1.5rem;
+}
+
+.inv-form{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0.75rem 1rem;
+}
+
+.inv-input{
+  background:var(--bg-card-2);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:.65rem .8rem;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.inv-input::placeholder{ color:#94a3b8; }
+.inv-input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.inv-check{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.4rem .6rem;
+  background:var(--bg-card-2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+}
+
+.inv-checkbox{
+  width:18px; height:18px;
+  accent-color:var(--accent);
+  cursor:pointer;
+}
+
+.inv-submit{
+  grid-column:1 / -1; /* botón ocupa todo el ancho */
+  margin-top:.25rem;
+  background:var(--accent);
+  color:var(--accent-ink);
+  border:none;
+  border-radius:10px;
+  padding:.7rem 1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:filter .15s ease, transform .05s ease;
+}
+.inv-submit:hover{ filter:brightness(.98); }
+.inv-submit:active{ transform:translateY(1px); }
+
+.inv-success{
+  margin-top:.9rem;
+  color:var(--accent);
+  font-weight:600;
+}
+
+/* Responsive */
+@media (max-width:720px){
+  .inv-form{ grid-template-columns:1fr; }
+}
