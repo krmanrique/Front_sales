@@ -15,7 +15,7 @@ const Order = ({ user, token }) => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/products');
+        const response = await fetch('https://back-sales-tau.vercel.app/');
         if (!response.ok) throw new Error('Error al cargar productos');
         const data = await response.json();
         console.log(data);
@@ -110,7 +110,7 @@ const Order = ({ user, token }) => {
 
     try {
       const tk = localStorage.getItem('token') || token;
-      const response = await fetch('http://localhost:5000/orders/create', {
+      const response = await fetch('https://back-sales-tau.vercel.app/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

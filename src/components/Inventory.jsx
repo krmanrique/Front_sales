@@ -14,7 +14,7 @@ const Inventory = () => {
   const handleInventory = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/products/create', {
+      const response = await fetch('https://back-sales-tau.vercel.app/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
