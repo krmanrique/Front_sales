@@ -21,7 +21,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch("https://back-sales-tau.vercel.app/", {
+      const response = await fetch("https://back-sales-tau.vercel.app/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gmail, password }),
