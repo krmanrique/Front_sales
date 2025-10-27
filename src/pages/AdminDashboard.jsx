@@ -1,10 +1,11 @@
+// src/pages/AdminDashboard.jsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
 
 const API_BASE = 'https://back-sales-tau.vercel.app';
 
-const AdminDashboard = ({ user }) => {
+const AdminDashboard = ({ user, setUser }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [productsCount, setProductsCount] = useState(null);
@@ -12,9 +13,15 @@ const AdminDashboard = ({ user }) => {
   const [error, setError] = useState('');
 
   const isAdmin = useMemo(() => {
-    // Ajusta según tu estructura de usuario
-    return user?.role === 'admin' || user?.isAdmin === true || true; // quita el "true" si ya manejas roles
+    return user?.role === 'admin' || user?.isAdmin === true || true; // deja tu lógica real cuando la tengas
   }, [user]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    if (typeof setUser === 'function') setUser([]);
+    navigate('/'); // Login
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -23,7 +30,6 @@ const AdminDashboard = ({ user }) => {
         setError('');
         const tk = localStorage.getItem('token');
 
-        // Productos: intenta /products/count, si no existe, hace GET /products y cuenta
         const prodResCount = await fetch(`${API_BASE}/products/count`, {
           headers: tk ? { Authorization: `Bearer ${tk}` } : {}
         });
@@ -42,7 +48,6 @@ const AdminDashboard = ({ user }) => {
           }
         }
 
-        // Órdenes: intenta /orders/count, si no existe, GET /orders y cuenta
         const ordResCount = await fetch(`${API_BASE}/orders/count`, {
           headers: tk ? { Authorization: `Bearer ${tk}` } : {}
         });
@@ -82,6 +87,11 @@ const AdminDashboard = ({ user }) => {
 
   return (
     <div className="dash-container">
+      {/* Solo botón de salir */}
+      <div className="dash-topbar-right">
+        <button className="logout-btn" onClick={handleLogout}>Cerrar sesión</button>
+      </div>
+
       <h2>Dashboard Administrativo</h2>
       {error && <div className="dash-error">{error}</div>}
 
@@ -92,13 +102,9 @@ const AdminDashboard = ({ user }) => {
             <span className="dash-card-emoji">📦</span>
           </div>
           <div className="dash-card-body">
-            {loading ? (
-              <span className="dash-muted">Cargando…</span>
-            ) : productsCount != null ? (
-              <strong className="dash-kpi">{productsCount}</strong>
-            ) : (
-              <span className="dash-muted">—</span>
-            )}
+            {loading ? <span className="dash-muted">Cargando…</span>
+              : productsCount != null ? <strong className="dash-kpi">{productsCount}</strong>
+              : <span className="dash-muted">—</span>}
           </div>
           <div className="dash-card-footer">Ver listado</div>
         </button>
@@ -109,13 +115,9 @@ const AdminDashboard = ({ user }) => {
             <span className="dash-card-emoji">🧾</span>
           </div>
           <div className="dash-card-body">
-            {loading ? (
-              <span className="dash-muted">Cargando…</span>
-            ) : ordersCount != null ? (
-              <strong className="dash-kpi">{ordersCount}</strong>
-            ) : (
-              <span className="dash-muted">—</span>
-            )}
+            {loading ? <span className="dash-muted">Cargando…</span>
+              : ordersCount != null ? <strong className="dash-kpi">{ordersCount}</strong>
+              : <span className="dash-muted">—</span>}
           </div>
           <div className="dash-card-footer">Ver total / detalle</div>
         </button>

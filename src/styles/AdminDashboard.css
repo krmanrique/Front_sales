@@ -155,14 +155,24 @@
   transition: background .2s ease, transform .1s ease;
 }
 
-.back-btn:hover {
-  background: #0ea5e9;
-  color: #062a23;
+/* styles/AdminDashboard.css */
+.dash-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:1rem;
 }
 
-.back-btn:active {
-  transform: translateY(1px);
+
+.logout-btn{
+  background:#e05353;
+  border:none;
+  color:#fff;
+  padding:.5rem .9rem;
+  border-radius:.5rem;
+  cursor:pointer;
 }
+.logout-btn:hover{ opacity:.9; }
 
 
 
