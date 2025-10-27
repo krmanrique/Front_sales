@@ -3,7 +3,7 @@ import '../styles/AdminDashboard.css';
 import { useNavigate } from 'react-router-dom';
 
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://back-sales-tau.vercel.app';
 
 const Products = () => {
   const [data, setData] = useState([]);
