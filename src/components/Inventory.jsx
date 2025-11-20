@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import '../styles/Inventory.css';
 
@@ -9,7 +9,22 @@ const Inventory = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [available, setAvailable] = useState(true);
   const [isCreated, setIsCreated] = useState(false);
+  const [externalProducts, setExternalProducts] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchExternalProducts = async () => {
+      try {
+        const response = await fetch('https://back-sales-tau.vercel.app/products/external');
+        const data = await response.json();
+        setExternalProducts(data); //Guardar los produtos externos en el estado
+      } catch (error) {
+        alert('Error al obtener productos externos');
+      }
+    };
+
+    fetchExternalProducts();
+  }, []);
 
   const handleInventory = async (e) => {
     e.preventDefault();
@@ -97,6 +112,31 @@ const Inventory = () => {
         </form>
 
         {isCreated && <p className="inv-success">Producto creado con éxito.</p>}
+
+        {/* SECCIÓN DE PRODUCTOS EXTERNOS - AGREGADA */}
+        <div className="external-products-section">
+          <h3 className="external-title">Productos de la API Externa</h3>
+          <div className="external-products-grid">
+            {externalProducts.length === 0 ? (
+              <p>Cargando productos externos...</p>
+            ) : (
+              externalProducts.map((product, index) => (
+                <div key={index} className="external-product-card">
+                  <img 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    className="external-product-image"
+                  />
+                  <h4 className="external-product-name">{product.name}</h4>
+                  <p className="external-product-price">${product.price}</p>
+                  {product.category && (
+                    <p className="external-product-category">{product.category}</p>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import Cart from "./Cart";
 
 const Order = ({ user, token }) => {
   const [products, setProducts] = useState([]);
+  const [externalProducts, setExternalProducts] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -30,14 +31,33 @@ const Order = ({ user, token }) => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    const fetchExternalProducts = async () => {
+      try {
+        const response = await fetch('https://back-sales-tau.vercel.app/products/external');
+        if (!response.ok) throw new Error('Error al cargar productos externos');
+        const data = await response.json();
+        setExternalProducts(data);
+      } catch (error) {
+        console.error('Error al cargar productos externos:', error);
+        alert('Error al cargar productos externos');
+      }
+    };
+    fetchExternalProducts();
+  }, []);
+
   // Persistencia del carrito
   useEffect(() => {
     const saved = localStorage.getItem("cart_items");
     if (saved) setSelectedItems(JSON.parse(saved));
   }, []);
+  
   useEffect(() => {
     localStorage.setItem("cart_items", JSON.stringify(selectedItems));
   }, [selectedItems]);
+
+  const totalPrice = selectedItems.reduce((t, i) => t + i.price * i.quantity, 0);
+  const totalItems = selectedItems.reduce((t, i) => t + i.quantity, 0);
 
   const findProductById = (id) => products.find(p => p._id === id);
 
@@ -65,18 +85,46 @@ const Order = ({ user, token }) => {
     }
   };
 
-  const handleIncrease = (productId) => {
-    const product = findProductById(productId);
-    const item = selectedItems.find(i => i.productId === productId);
-    if (!product || !item) return;
-
-    if (item.quantity >= product.stock) {
-      alert('No hay más stock disponible');
-      return;
+  // Función para agregar productos externos (solo visual)
+  const handleAddExternalItem = (product) => {
+    const existing = selectedItems.find(i => i.productId === `ext-${product.externalId}`);
+    if (existing) {
+      setSelectedItems(selectedItems.map(i =>
+        i.productId === `ext-${product.externalId}` ? { ...i, quantity: i.quantity + 1 } : i
+      ));
+    } else {
+      setSelectedItems([...selectedItems, {
+        productId: `ext-${product.externalId}`,
+        quantity: 1,
+        price: product.price,
+        productName: product.name,
+        isExternal: true
+      }]);
     }
-    setSelectedItems(selectedItems.map(i =>
-      i.productId === productId ? { ...i, quantity: i.quantity + 1 } : i
-    ));
+  };
+
+  const handleIncrease = (productId) => {
+    const item = selectedItems.find(i => i.productId === productId);
+    if (!item) return;
+
+    // Si es producto externo, no verificar stock
+    if (item.isExternal) {
+      setSelectedItems(selectedItems.map(i =>
+        i.productId === productId ? { ...i, quantity: i.quantity + 1 } : i
+      ));
+    } else {
+      // Productos locales (lógica original)
+      const product = findProductById(productId);
+      if (!product || !item) return;
+
+      if (item.quantity >= product.stock) {
+        alert('No hay más stock disponible');
+        return;
+      }
+      setSelectedItems(selectedItems.map(i =>
+        i.productId === productId ? { ...i, quantity: i.quantity + 1 } : i
+      ));
+    }
   };
 
   const handleDecrease = (productId) => {
@@ -95,13 +143,16 @@ const Order = ({ user, token }) => {
     setSelectedItems(selectedItems.filter(item => item.productId !== productId));
   };
 
-  // Totales (para el resumen que mandaremos a Admin)
-  const totalPrice = selectedItems.reduce((t, i) => t + i.price * i.quantity, 0);
-  const totalItems = selectedItems.reduce((t, i) => t + i.quantity, 0);
-
   const handleCreateOrder = async () => {
     if (selectedItems.length === 0) {
       alert('Agrega al menos un producto al pedido');
+      return;
+    }
+
+    // Validar que no haya productos externos en el carrito
+    const hasExternalProducts = selectedItems.some(item => item.isExternal);
+    if (hasExternalProducts) {
+      alert('Solo puedes comprar productos locales. Los productos externos son de referencia.');
       return;
     }
 
@@ -163,6 +214,7 @@ const Order = ({ user, token }) => {
       ) : (
         <>
           <div className="products-grid">
+            {/* Productos locales */}
             {products.map((product) => (
               <div key={product._id} className="product-card">
                 <img
@@ -182,6 +234,27 @@ const Order = ({ user, token }) => {
                   disabled={product.stock <= 0}
                 >
                   {product.stock <= 0 ? 'Sin Stock' : 'Agregar al pedido'}
+                </button>
+              </div>
+            ))}
+
+            {/* Productos externos */}
+            {externalProducts.map((product) => (
+              <div key={product.externalId} className="product-card external-product">
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="product-image"
+                />
+                <h4>{product.name}</h4>
+                <p>Precio: ${(product.price).toFixed(2)}</p>
+                <p className="stock-external">Producto de referencia</p>
+                <button
+                  type="button"
+                  onClick={() => handleAddExternalItem(product)}
+                  className="add-button external-btn"
+                >
+                  Agregar al pedido
                 </button>
               </div>
             ))}
